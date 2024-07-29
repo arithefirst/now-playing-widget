@@ -1,8 +1,8 @@
 let timeoutId;
 
 function tokenRefresh() {
-  var client_id = "80b7971a22ec46358240b5bde22180a4";
-  var redirect_uri = "http://127.0.0.1:5500";
+  var client_id = "CLIENT_ID_HERE";
+  var redirect_uri = "REDIRECT_URI_HERE";
   var scope = "user-read-playback-state";
 
   var url = "https://accounts.spotify.com/authorize";
