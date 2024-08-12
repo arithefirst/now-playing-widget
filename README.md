@@ -26,4 +26,4 @@ By default, only the owner of the endpoint can use the widget through their spot
 4. Add the name and email of anyone you would like to be able to access your endpoint
 
 > [!NOTE]  
-> The "Full Name" field does not need to match the name on the user's account.
+> The "email" field must match the email on the account of the person whom you are trying to add.
