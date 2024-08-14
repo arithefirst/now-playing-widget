@@ -1,34 +1,34 @@
 #cover {
-    border-radius: 15px;
-    height: 150px;
+  border-radius: 15px;
+  height: 150px;
 }
 
 #data {
-    padding-left: 15px;
-    padding-top: 21px;
+  padding-left: 15px;
+  padding-top: 21px;
 }
 
 #dataContainer {
-    display: flex;
-    color: lightgray;
-    background-color: #181a1b;
-    border-radius: 15px;
-    width: 450px;
+  display: flex;
+  color: lightgray;
+  background-color: #181a1b;
+  border-radius: 15px;
+  width: 450px;
 }
 
 #song {
-    color: white;
-    font-weight: bold;
-    font-size: larger;
+  color: white;
+  font-weight: bold;
+  font-size: larger;
 }
 
 #album {
-    color: white;
-    font-weight: bold;
-    font-size: smaller;
+  color: white;
+  font-weight: bold;
+  font-size: smaller;
 }
 
 #artist {
-    color: white;
-    font-weight: bold;
+  color: white;
+  font-weight: bold;
 }
