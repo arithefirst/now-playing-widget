@@ -18,7 +18,6 @@ function tokenRefresh() {
 function truncateString(str, maxLength) {
   if (str.length > maxLength) {
     const shortStr = str.slice(0, maxLength - 3);
-    const strTackedWhitespace = shortStr.replace(/ $/, "");
     return shortStr.replace(/ $/, "") + "...";
   }
   return str;
@@ -48,13 +47,13 @@ function getNowPlaying() {
       })
       .then((data) => {
         const jsonData = data;
-        document.getElementById("data").style = "opacity: 1;";
-        document.getElementById("dataContainer").style = "opacity: 1;";
-        document.getElementById("song").innerHTML = truncateString(jsonData["item"]["name"], 20);
-        document.getElementById("artist").innerHTML = truncateString(jsonData["item"]["artists"][0]["name"], 25);
-        document.getElementById("album").innerHTML = truncateString(jsonData["item"]["album"]["name"], 35);
-        document.getElementById("cover").src = jsonData["item"]["album"]["images"][0]["url"];
-        document.getElementById("favicon").href = jsonData["item"]["album"]["images"][0]["url"];
+        $("#data").css("opacity", "1");
+        $("#dataContainer").css("opacity", "1");
+        $("#song").text(truncateString(jsonData["item"]["name"], 20));
+        $("#artist").text(truncateString(jsonData["item"]["artists"][0]["name"], 25));
+        $("#album").text(truncateString(jsonData["item"]["album"]["name"], 35));
+        $("#cover").attr("src", jsonData["item"]["album"]["images"][0]["url"]);
+        $("#favicon").attr("href", jsonData["item"]["album"]["images"][0]["url"]);
         console.log(jsonData);
       })
       .catch((error) => {
@@ -62,8 +61,8 @@ function getNowPlaying() {
         if (error.message.includes("Network")) {
           tokenRefresh();
         } else {
-          document.getElementById("data").style = "opacity: 0;";
-          document.getElementById("dataContainer").style = "opacity: 0;";
+          $("#data").css("opacity", "0");
+          $("#dataContainer").css("opacity", "0");
         }
       });
   } else {
