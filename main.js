@@ -17,13 +17,15 @@ function tokenRefresh() {
 
 function truncateString(str, maxLength) {
   if (str.length > maxLength) {
-      return str.slice(0, maxLength - 3) + '...';
+    const shortStr = str.slice(0, maxLength - 3);
+    const strTackedWhitespace = shortStr.replace(/ $/, "");
+    return shortStr.replace(/ $/, "") + "...";
   }
   return str;
 }
 
 function getNowPlaying() {
-  console.log("Refreshing...")
+  console.log("Refreshing...");
   const currentUrl = window.location.href;
   const fragment = currentUrl.split("#")[1];
 
@@ -40,20 +42,20 @@ function getNowPlaying() {
     fetch("https://api.spotify.com/v1/me/player", options)
       .then((response) => {
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error("Network response was not ok");
         }
         return response.json();
       })
       .then((data) => {
         const jsonData = data;
         document.getElementById("data").style = "opacity: 1;";
-        document.getElementById("dataContainer").style = "opacity: 1;"
+        document.getElementById("dataContainer").style = "opacity: 1;";
         document.getElementById("song").innerHTML = truncateString(jsonData["item"]["name"], 20);
         document.getElementById("artist").innerHTML = truncateString(jsonData["item"]["artists"][0]["name"], 25);
         document.getElementById("album").innerHTML = truncateString(jsonData["item"]["album"]["name"], 35);
         document.getElementById("cover").src = jsonData["item"]["album"]["images"][0]["url"];
         document.getElementById("favicon").href = jsonData["item"]["album"]["images"][0]["url"];
-        console.log(jsonData)
+        console.log(jsonData);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -61,9 +63,8 @@ function getNowPlaying() {
           tokenRefresh();
         } else {
           document.getElementById("data").style = "opacity: 0;";
-          document.getElementById("dataContainer").style = "opacity: 0;"
+          document.getElementById("dataContainer").style = "opacity: 0;";
         }
-        
       });
   } else {
     tokenRefresh();
