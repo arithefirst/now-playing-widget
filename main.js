@@ -1,10 +1,9 @@
 let timeoutId;
 
 function tokenRefresh() {
-  var client_id = "CLIENT_ID_HERE";
-  var redirect_uri = "REDIRECT_URI_HERE";
+  var client_id = "80b7971a22ec46358240b5bde22180a4";
+  var redirect_uri = window.location.href.replace(/ $/, "");
   var scope = "user-read-playback-state";
-
   var url = "https://accounts.spotify.com/authorize";
   url += "?response_type=token";
   url += "&client_id=" + encodeURIComponent(client_id);
@@ -27,6 +26,7 @@ function getNowPlaying() {
   console.log("Refreshing...");
   const currentUrl = window.location.href;
   const fragment = currentUrl.split("#")[1];
+  console.log(fragment);
 
   if (fragment) {
     const authToken = fragment.split("=")[1];
@@ -69,3 +69,11 @@ function getNowPlaying() {
     tokenRefresh();
   }
 }
+
+window.onload = function () {
+  getNowPlaying();
+  console.log('Retrived color cookies: {"STC": "' + Cookies.get("STC") + '",' + '"TC": "' + Cookies.get("TC") + '",' + '"BG": "' + Cookies.get("BG") + '"}');
+  $("html").get(0).style.setProperty("--smalltext-color", Cookies.get("STC"));
+  $("html").get(0).style.setProperty("--text-color", Cookies.get("TC"));
+  $("html").get(0).style.setProperty("--background-color", Cookies.get("BG"));
+};
