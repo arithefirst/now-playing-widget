@@ -2,7 +2,7 @@ let timeoutId;
 
 function tokenRefresh() {
   var client_id = "CLIENT_ID_HERE";
-  var redirect_uri = window.location.href.replace(/ $/, "");
+  var redirect_uri = window.location.href.replace(/\/$/, "");
   var scope = "user-read-playback-state";
   var url = "https://accounts.spotify.com/authorize";
   url += "?response_type=token";
