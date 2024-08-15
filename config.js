@@ -15,9 +15,24 @@ function generateCookies() {
 
 function getCookies() {
   console.log('Retrived color cookies: {"STC": "' + Cookies.get("STC") + '",' + '"TC": "' + Cookies.get("TC") + '",' + '"BG": "' + Cookies.get("BG") + '"}');
-  $("#stc").val(Cookies.get("STC"));
-  $("#tc").val(Cookies.get("TC"));
-  $("#bg").val(Cookies.get("BG"));
+  // If the cookies are not set, use default colors
+  if (Cookies.get("STC") != undefined) {
+    $("#stc").val(Cookies.get("STC"));
+  } else {
+    $("#stc").val("#D3D3D3");
+  }
+
+  if (Cookies.get("TC") != undefined) {
+    $("#tc").val(Cookies.get("TC"));
+  } else {
+    $("#tc").val("#FFFFFF");
+  }
+
+  if (Cookies.get("BG") != undefined) {
+    $("#bg").val(Cookies.get("BG"));
+  } else {
+    $("#bg").val("#181A1B");
+  }
 }
 
 window.onload = function () {

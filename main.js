@@ -1,7 +1,7 @@
 let timeoutId;
 
 function tokenRefresh() {
-  var client_id = "80b7971a22ec46358240b5bde22180a4";
+  var client_id = "CLIENT_ID_HERE";
   var redirect_uri = window.location.href.replace(/ $/, "");
   var scope = "user-read-playback-state";
   var url = "https://accounts.spotify.com/authorize";
@@ -73,7 +73,22 @@ function getNowPlaying() {
 window.onload = function () {
   getNowPlaying();
   console.log('Retrived color cookies: {"STC": "' + Cookies.get("STC") + '",' + '"TC": "' + Cookies.get("TC") + '",' + '"BG": "' + Cookies.get("BG") + '"}');
-  $("html").get(0).style.setProperty("--smalltext-color", Cookies.get("STC"));
-  $("html").get(0).style.setProperty("--text-color", Cookies.get("TC"));
-  $("html").get(0).style.setProperty("--background-color", Cookies.get("BG"));
+  // If the cookies are not set, use default colors
+  if (Cookies.get("STC") != undefined) {
+    $("html").get(0).style.setProperty("--smalltext-color", Cookies.get("STC"));
+  } else {
+    $("html").get(0).style.setProperty("--smalltext-color", "#D3D3D3");
+  }
+
+  if (Cookies.get("TC") != undefined) {
+    $("html").get(0).style.setProperty("--text-color", Cookies.get("TC"));
+  } else {
+    $("html").get(0).style.setProperty("--text-color", "#FFFFFF");
+  }
+
+  if (Cookies.get("BG") != undefined) {
+    $("html").get(0).style.setProperty("--background-color", Cookies.get("BG"));
+  } else {
+    $("html").get(0).style.setProperty("--background-color", "#181A1B");
+  }
 };
