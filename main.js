@@ -2,7 +2,7 @@ let timeoutId;
 
 function tokenRefresh() {
   var client_id = "CLIENT_ID_HERE";
-  var redirect_uri = window.location.href.replace(/\/$/, "");
+  var redirect_uri = window.location.href.split("#")[0].replace(/\/$/, "");
   var scope = "user-read-playback-state";
   var url = "https://accounts.spotify.com/authorize";
   url += "?response_type=token";
@@ -26,7 +26,6 @@ function getNowPlaying() {
   console.log("Refreshing...");
   const currentUrl = window.location.href;
   const fragment = currentUrl.split("#")[1];
-  console.log(fragment);
 
   if (fragment) {
     const authToken = fragment.split("=")[1];
@@ -54,7 +53,6 @@ function getNowPlaying() {
         $("#album").text(truncateString(jsonData["item"]["album"]["name"], 35));
         $("#cover").attr("src", jsonData["item"]["album"]["images"][0]["url"]);
         $("#favicon").attr("href", jsonData["item"]["album"]["images"][0]["url"]);
-        console.log(jsonData);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -91,4 +89,6 @@ window.onload = function () {
   } else {
     $("html").get(0).style.setProperty("--background-color", "#181A1B");
   }
+
+  progress_ms();
 };
