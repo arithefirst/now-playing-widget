@@ -16,15 +16,12 @@
   width: 450px;
 }
 
-.configContainer {
-  margin-bottom: 10px;
-}
-
 .tcIn,
 .bgIn,
-.stcIn {
+.stcIn,
+.side {
   width: 450px;
-  padding-bottom: 14px;
+  padding-bottom: 10px;
 }
 
 #song {
@@ -44,7 +41,18 @@
   font-weight: bold;
 }
 
-input {
+.color {
   border-radius: 4px;
   float: right;
+}
+
+.side {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+hr {
+  width: 450px;
+  float: left;
 }
