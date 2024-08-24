@@ -46,12 +46,15 @@ function getNowPlaying() {
       })
       .then((data) => {
         const jsonData = data;
-        $("#data").css("opacity", "1");
-        $("#dataContainer").css("opacity", "1");
-        $("#song").text(truncateString(jsonData["item"]["name"], 20));
-        $("#artist").text(truncateString(jsonData["item"]["artists"][0]["name"], 25));
-        $("#album").text(truncateString(jsonData["item"]["album"]["name"], 35));
-        $("#cover").attr("src", jsonData["item"]["album"]["images"][0]["url"]);
+        $("body").css("opacity", "1");
+        $("#song-l").text(truncateString(jsonData["item"]["name"], 20));
+        $("#song-r").text(truncateString(jsonData["item"]["name"], 20));
+        $("#artist-l").text(truncateString(jsonData["item"]["artists"][0]["name"], 25));
+        $("#artist-r").text(truncateString(jsonData["item"]["artists"][0]["name"], 25));
+        $("#album-l").text(truncateString(jsonData["item"]["album"]["name"], 35));
+        $("#album-r").text(truncateString(jsonData["item"]["album"]["name"], 35));
+        $("#cover-r").attr("src", jsonData["item"]["album"]["images"][0]["url"]);
+        $("#cover-l").attr("src", jsonData["item"]["album"]["images"][0]["url"]);
         $("#favicon").attr("href", jsonData["item"]["album"]["images"][0]["url"]);
       })
       .catch((error) => {
@@ -59,8 +62,7 @@ function getNowPlaying() {
         if (error.message.includes("Network")) {
           tokenRefresh();
         } else {
-          $("#data").css("opacity", "0");
-          $("#dataContainer").css("opacity", "0");
+          $("body").css("opacity", "0");
         }
       });
   } else {
@@ -90,5 +92,11 @@ window.onload = function () {
     $("html").get(0).style.setProperty("--background-color", "#181A1B");
   }
 
-  progress_ms();
+  if (Cookies.get("LEFT") == "true") {
+    $("#ALR").css("display", "none");
+    $("#ALL").css("display", "inline");
+  } else {
+    $("#ALL").css("display", "none");
+    $("#ALR").css("display", "inline");
+  }
 };

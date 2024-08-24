@@ -2,6 +2,13 @@ function setCSS() {
   $("html").get(0).style.setProperty("--smalltext-color", $("#stc").val());
   $("html").get(0).style.setProperty("--text-color", $("#tc").val());
   $("html").get(0).style.setProperty("--background-color", $("#bg").val());
+  if ($("#toggle").is(":checked")) {
+    $("#ALL").css("display", "none");
+    $("#ALR").css("display", "block");
+  } else {
+    $("#ALR").css("display", "none");
+    $("#ALL").css("display", "block");
+  }
   generateCookies($("#tc").val(), $("#bg").val(), $("#stc").val());
 }
 
@@ -10,11 +17,12 @@ function generateCookies() {
   Cookies.set("STC", $("#stc").val(), { expires: expiresDays, sameSite: "none" });
   Cookies.set("TC", $("#tc").val(), { expires: expiresDays, sameSite: "none" });
   Cookies.set("BG", $("#bg").val(), { expires: expiresDays, sameSite: "none" });
-  console.log('Set color cookies: {"STC": "' + Cookies.get("STC") + '",' + '"TC": "' + Cookies.get("TC") + '",' + '"BG": "' + Cookies.get("BG") + '"}');
+  Cookies.set("LEFT", !$("#toggle").is(":checked"), { expires: expiresDays, sameSite: "none" });
+  console.log(`Set Cookies: {STC: ${$("#stc").val()}, TC: ${$("#tc").val()}, BG: ${$("#bg").val()}, LEFT: ${!$("#toggle").is(":checked")}}`);
 }
 
 function getCookies() {
-  console.log('Retrived color cookies: {"STC": "' + Cookies.get("STC") + '",' + '"TC": "' + Cookies.get("TC") + '",' + '"BG": "' + Cookies.get("BG") + '"}');
+  console.log(`Got Cookies: {STC: ${Cookies.get("STC")}, TC: ${Cookies.get("TC")}, BG: ${Cookies.get("BG")}, LEFT: ${Cookies.get("LEFT")}}`);
   // If the cookies are not set, use default colors
   if (Cookies.get("STC") != undefined) {
     $("#stc").val(Cookies.get("STC"));
@@ -40,4 +48,11 @@ window.onload = function () {
   $("html").get(0).style.setProperty("--smalltext-color", $("#stc").val());
   $("html").get(0).style.setProperty("--text-color", $("#tc").val());
   $("html").get(0).style.setProperty("--background-color", $("#bg").val());
+  if ($("#toggle").is(":checked")) {
+    $("#ALL").css("display", "none");
+    $("#ALR").css("display", "block");
+  } else {
+    $("#ALR").css("display", "none");
+    $("#ALL").css("display", "block");
+  }
 };
