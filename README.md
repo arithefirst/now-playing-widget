@@ -22,7 +22,7 @@ To host an instance of the widget, follow the steps below.
 
 ## Changing the Color Scheme and Alignment (optional)
 
-The default color scheme is pictured above, in a black and gray theme with right align. However, there is a build-in endpoint that allows you to control the theming and alignment of the widget. To apply a custom widget, follow the steps below.
+The default color scheme is pictured above, in a black and gray theme with left align. However, there is a build-in endpoint that allows you to control the theming and alignment of the widget. To apply a custom widget, follow the steps below.
 
 1. Visit `YOUR_SERVER_URL/config.html`
 2. Select the colors you would like to use for each element VIA the color pickers
