@@ -17,12 +17,12 @@ function generateCookies() {
   Cookies.set("STC", $("#stc").val(), { expires: expiresDays, sameSite: "none" });
   Cookies.set("TC", $("#tc").val(), { expires: expiresDays, sameSite: "none" });
   Cookies.set("BG", $("#bg").val(), { expires: expiresDays, sameSite: "none" });
-  Cookies.set("LEFT", !$("#toggle").is(":checked"), { expires: expiresDays, sameSite: "none" });
-  console.log(`Set Cookies: {STC: ${$("#stc").val()}, TC: ${$("#tc").val()}, BG: ${$("#bg").val()}, LEFT: ${!$("#toggle").is(":checked")}}`);
+  Cookies.set("RIGHT", $("#toggle").is(":checked"), { expires: expiresDays, sameSite: "none" });
+  console.log(`Set Cookies: {STC: ${$("#stc").val()}, TC: ${$("#tc").val()}, BG: ${$("#bg").val()}, RIGHT: ${$("#toggle").is(":checked")}}`);
 }
 
 function getCookies() {
-  console.log(`Got Cookies: {STC: ${Cookies.get("STC")}, TC: ${Cookies.get("TC")}, BG: ${Cookies.get("BG")}, LEFT: ${Cookies.get("LEFT")}}`);
+  console.log(`Got Cookies: {STC: ${Cookies.get("STC")}, TC: ${Cookies.get("TC")}, BG: ${Cookies.get("BG")}, RIGHT: ${Cookies.get("RIGHT")}}`);
   // If the cookies are not set, use default colors
   if (Cookies.get("STC") != undefined) {
     $("#stc").val(Cookies.get("STC"));

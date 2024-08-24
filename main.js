@@ -92,11 +92,11 @@ window.onload = function () {
     $("html").get(0).style.setProperty("--background-color", "#181A1B");
   }
 
-  if (Cookies.get("LEFT") == "true") {
-    $("#ALR").css("display", "none");
-    $("#ALL").css("display", "inline");
-  } else {
-    $("#ALL").css("display", "none");
+  if (Cookies.get("RIGHT") == "true") {
     $("#ALR").css("display", "inline");
+    $("#ALL").css("display", "none");
+  } else {
+    $("#ALL").css("display", "inline");
+    $("#ALR").css("display", "none");
   }
 };
