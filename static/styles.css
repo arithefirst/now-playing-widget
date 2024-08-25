@@ -34,14 +34,6 @@
   width: 450px;
 }
 
-.tcIn,
-.bgIn,
-.stcIn,
-.side {
-  width: 450px;
-  padding-bottom: 10px;
-}
-
 #song-l,
 #song-r {
   color: var(--text-color);
@@ -60,20 +52,4 @@
 #artist-r {
   color: var(--text-color);
   font-weight: bold;
-}
-
-.color {
-  border-radius: 4px;
-  float: right;
-}
-
-.side {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-hr {
-  width: 450px;
-  float: left;
 }
