@@ -1,0 +1,79 @@
+#cover-r {
+  border-radius: 14px;
+  height: 150px;
+  align-self: flex-end;
+}
+
+#cover-l {
+  border-radius: 14px;
+  height: 150px;
+  align-self: flex-start;
+}
+
+#data {
+  padding-left: 15px;
+  padding-top: 21px;
+}
+
+#dataContainer-r {
+  margin-bottom: 10px;
+  display: flex;
+  color: var(--smalltext-color);
+  background-color: var(--background-color);
+  border-radius: 15px;
+  width: 450px;
+  justify-content: space-between;
+}
+
+#dataContainer-l {
+  margin-bottom: 10px;
+  display: flex;
+  color: var(--smalltext-color);
+  background-color: var(--background-color);
+  border-radius: 15px;
+  width: 450px;
+}
+
+.tcIn,
+.bgIn,
+.stcIn,
+.side {
+  width: 450px;
+  padding-bottom: 10px;
+}
+
+#song-l,
+#song-r {
+  color: var(--text-color);
+  font-weight: bold;
+  font-size: larger;
+}
+
+#album-l,
+#album-r {
+  color: var(--text-color);
+  font-weight: bold;
+  font-size: smaller;
+}
+
+#artist-l,
+#artist-r {
+  color: var(--text-color);
+  font-weight: bold;
+}
+
+.color {
+  border-radius: 4px;
+  float: right;
+}
+
+.side {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+hr {
+  width: 450px;
+  float: left;
+}
