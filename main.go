@@ -20,6 +20,10 @@ func main() {
 	http.HandleFunc("/api/v1/set/TC", setTC)
 	http.HandleFunc("/api/v1/set/BG", setBG)
 
+	// Serve the files in static/
+	http.Handle("/", http.FileServer(http.Dir("static/")))
+	http.Handle("/config/", http.StripPrefix("/config/", http.FileServer(http.Dir("static/config/"))))
+
 	// Start the server
 	fmt.Printf("Server started on port %v\n", port)
 	var portString string = ":" + strconv.Itoa(int(port))
