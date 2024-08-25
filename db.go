@@ -18,11 +18,12 @@ type mongoServer struct {
 }
 
 type user struct {
-	ID  string `bson:"_id"`
-	UID string `bson:"uid"`
-	TC  string `bson:"tc"`
-	STC string `bson:"stc"`
-	BG  string `bson:"bg"`
+	ID    string `bson:"_id"`
+	UID   string `bson:"uid"`
+	TC    string `bson:"tc"`
+	STC   string `bson:"stc"`
+	BG    string `bson:"bg"`
+	Empty bool
 }
 
 func get(uid string) (*user, error) {
@@ -61,11 +62,12 @@ func get(uid string) (*user, error) {
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			fmt.Println("No documents found with the given name")
-			return nil, nil
+			return &user{ID: "", UID: "", TC: "", STC: "", BG: "", Empty: true}, nil
 		} else {
 			log.Fatal(err)
 		}
 	}
 
+	output.Empty = false
 	return &output, nil
 }
