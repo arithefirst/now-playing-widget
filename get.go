@@ -21,11 +21,11 @@ func sendJson(hex string, err string) string {
 
 func getBG(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json; charset=utf-8")
-	uid := r.Header.Get("uid")
+	uid := r.URL.Query().Get("uid")
 
 	if uid == "" {
 		// if uid is empty return an error
-		fmt.Fprint(w, sendJson("null", "UID header empty"))
+		fmt.Fprint(w, sendJson("null", "uid not present in querystring"))
 	} else {
 		output, err := get(uid)
 		if err != nil {
@@ -45,11 +45,11 @@ func getBG(w http.ResponseWriter, r *http.Request) {
 
 func getTC(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json; charset=utf-8")
-	uid := r.Header.Get("uid")
+	uid := r.URL.Query().Get("uid")
 
 	if uid == "" {
 		// if uid is empty return an error
-		fmt.Fprint(w, sendJson("null", "UID header empty"))
+		fmt.Fprint(w, sendJson("null", "uid not present in querystring"))
 	} else {
 		output, err := get(uid)
 		if err != nil {
@@ -69,11 +69,11 @@ func getTC(w http.ResponseWriter, r *http.Request) {
 
 func getSTC(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json; charset=utf-8")
-	uid := r.Header.Get("uid")
+	uid := r.URL.Query().Get("uid")
 
 	if uid == "" {
 		// if uid is empty return an error
-		fmt.Fprint(w, sendJson("null", "UID header empty"))
+		fmt.Fprint(w, sendJson("null", "uid not present in querystring"))
 	} else {
 		output, err := get(uid)
 		if err != nil {
