@@ -5,21 +5,37 @@ import (
 	"net/http"
 )
 
+// Function to create the json responses for the getX() funcs
+func sendJson(hex string, err string) string {
+	if hex == "null" {
+		json := "{\"hex\":null,\"err\":\"" + err + "\"}"
+		return json
+	} else if err == "null" {
+		json := "{\"hex\":\"" + hex + ",\"err\":null}"
+		return json
+	} else {
+		json := "{\"hex\":\"" + hex + "\",\"err\":\"" + err + "\"}"
+		return json
+	}
+}
+
 func getBG(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-type", "application/json; charset=utf-8")
 	uid := r.Header.Get("uid")
+
 	if uid == "" {
-		fmt.Fprintf(w, "Error: UID Header not recived.")
+		fmt.Fprint(w, sendJson("null", "UID header empty"))
 	} else {
 		output, err := get(uid)
 		if err != nil {
-			fmt.Fprintf(w, "Error: %v", err)
+			fmt.Fprint(w, sendJson("null", err.Error()))
 		} else {
 			// Check to see if the value is not set
 			if output.Empty {
 				// Return default if not set
-				fmt.Fprintf(w, "#181A1B")
+				fmt.Fprint(w, sendJson("#181A1B", "No value found: Default returned"))
 			} else {
-				fmt.Fprintf(w, output.BG)
+				fmt.Fprint(w, sendJson(output.BG, "null"))
 			}
 		}
 	}
@@ -27,20 +43,22 @@ func getBG(w http.ResponseWriter, r *http.Request) {
 }
 
 func getTC(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-type", "application/json; charset=utf-8")
 	uid := r.Header.Get("uid")
+
 	if uid == "" {
-		fmt.Fprintf(w, "Error: UID Header not recived.")
+		fmt.Fprint(w, sendJson("null", "UID header empty"))
 	} else {
 		output, err := get(uid)
 		if err != nil {
-			fmt.Fprintf(w, "Error: %v", err)
+			fmt.Fprint(w, sendJson("null", err.Error()))
 		} else {
 			// Check to see if the value is not set
 			if output.Empty {
 				// Return default if not set
-				fmt.Fprintf(w, "#FFFFFF")
+				fmt.Fprint(w, sendJson("#FFFFFF", "No value found: Default returned"))
 			} else {
-				fmt.Fprintf(w, output.TC)
+				fmt.Fprint(w, sendJson(output.TC, "null"))
 			}
 		}
 	}
@@ -48,20 +66,22 @@ func getTC(w http.ResponseWriter, r *http.Request) {
 }
 
 func getSTC(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-type", "application/json; charset=utf-8")
 	uid := r.Header.Get("uid")
+
 	if uid == "" {
-		fmt.Fprintf(w, "Error: UID Header not recived.")
+		fmt.Fprint(w, sendJson("null", "UID header empty"))
 	} else {
 		output, err := get(uid)
 		if err != nil {
-			fmt.Fprintf(w, "Error: %v", err)
+			fmt.Fprint(w, sendJson("null", err.Error()))
 		} else {
 			// Check to see if the value is not set
 			if output.Empty {
 				// Return default if not set
-				fmt.Fprintf(w, "#D3D3D3")
+				fmt.Fprint(w, sendJson("#D3D3D3", "No value found: Default returned"))
 			} else {
-				fmt.Fprintf(w, output.STC)
+				fmt.Fprint(w, sendJson(output.STC, "null"))
 			}
 		}
 	}
