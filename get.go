@@ -6,12 +6,12 @@ import (
 )
 
 // Function to create the json responses for the getX() funcs
-func sendJson(hex string, err string) string {
+func sendJsonGet(hex string, err string) string {
 	if hex == "null" {
 		json := "{\"hex\":null,\"err\":\"" + err + "\"}"
 		return json
 	} else if err == "null" {
-		json := "{\"hex\":\"" + hex + ",\"err\":null}"
+		json := "{\"hex\":\"" + hex + "\",\"err\":null}"
 		return json
 	} else {
 		json := "{\"hex\":\"" + hex + "\",\"err\":\"" + err + "\"}"
@@ -25,18 +25,18 @@ func getBG(w http.ResponseWriter, r *http.Request) {
 
 	if uid == "" {
 		// if uid is empty return an error
-		fmt.Fprint(w, sendJson("null", "uid not present in querystring"))
+		fmt.Fprint(w, sendJsonGet("null", "uid not present in querystring"))
 	} else {
 		output, err := get(uid)
 		if err != nil {
-			fmt.Fprint(w, sendJson("null", err.Error()))
+			fmt.Fprint(w, sendJsonGet("null", err.Error()))
 		} else {
 			// Check to see if the value is not set
 			if output.Empty {
 				// Return default if not set
-				fmt.Fprint(w, sendJson("#181A1B", "No value found: Default returned"))
+				fmt.Fprint(w, sendJsonGet("#181A1B", "No value found: Default returned"))
 			} else {
-				fmt.Fprint(w, sendJson(output.BG, "null"))
+				fmt.Fprint(w, sendJsonGet(output.BG, "null"))
 			}
 		}
 	}
@@ -49,18 +49,18 @@ func getTC(w http.ResponseWriter, r *http.Request) {
 
 	if uid == "" {
 		// if uid is empty return an error
-		fmt.Fprint(w, sendJson("null", "uid not present in querystring"))
+		fmt.Fprint(w, sendJsonGet("null", "uid not present in querystring"))
 	} else {
 		output, err := get(uid)
 		if err != nil {
-			fmt.Fprint(w, sendJson("null", err.Error()))
+			fmt.Fprint(w, sendJsonGet("null", err.Error()))
 		} else {
 			// Check to see if the value is not set
 			if output.Empty {
 				// Return default if not set
-				fmt.Fprint(w, sendJson("#FFFFFF", "No value found: Default returned"))
+				fmt.Fprint(w, sendJsonGet("#FFFFFF", "No value found: Default returned"))
 			} else {
-				fmt.Fprint(w, sendJson(output.TC, "null"))
+				fmt.Fprint(w, sendJsonGet(output.TC, "null"))
 			}
 		}
 	}
@@ -73,18 +73,18 @@ func getSTC(w http.ResponseWriter, r *http.Request) {
 
 	if uid == "" {
 		// if uid is empty return an error
-		fmt.Fprint(w, sendJson("null", "uid not present in querystring"))
+		fmt.Fprint(w, sendJsonGet("null", "uid not present in querystring"))
 	} else {
 		output, err := get(uid)
 		if err != nil {
-			fmt.Fprint(w, sendJson("null", err.Error()))
+			fmt.Fprint(w, sendJsonGet("null", err.Error()))
 		} else {
 			// Check to see if the value is not set
 			if output.Empty {
 				// Return default if not set
-				fmt.Fprint(w, sendJson("#D3D3D3", "No value found: Default returned"))
+				fmt.Fprint(w, sendJsonGet("#D3D3D3", "No value found: Default returned"))
 			} else {
-				fmt.Fprint(w, sendJson(output.STC, "null"))
+				fmt.Fprint(w, sendJsonGet(output.STC, "null"))
 			}
 		}
 	}
