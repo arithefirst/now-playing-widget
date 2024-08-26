@@ -24,6 +24,7 @@ func getBG(w http.ResponseWriter, r *http.Request) {
 	uid := r.Header.Get("uid")
 
 	if uid == "" {
+		// if uid is empty return an error
 		fmt.Fprint(w, sendJson("null", "UID header empty"))
 	} else {
 		output, err := get(uid)
@@ -47,6 +48,7 @@ func getTC(w http.ResponseWriter, r *http.Request) {
 	uid := r.Header.Get("uid")
 
 	if uid == "" {
+		// if uid is empty return an error
 		fmt.Fprint(w, sendJson("null", "UID header empty"))
 	} else {
 		output, err := get(uid)
@@ -70,6 +72,7 @@ func getSTC(w http.ResponseWriter, r *http.Request) {
 	uid := r.Header.Get("uid")
 
 	if uid == "" {
+		// if uid is empty return an error
 		fmt.Fprint(w, sendJson("null", "UID header empty"))
 	} else {
 		output, err := get(uid)
