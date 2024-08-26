@@ -61,7 +61,7 @@ func get(uid string) (*user, error) {
 
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			fmt.Println("No documents found with the given name")
+			fmt.Printf("No documents found with the name \"%v\"\n", uid)
 			return &user{ID: "", UID: "", TC: "", STC: "", BG: "", Empty: true}, nil
 		} else {
 			log.Fatal(err)
