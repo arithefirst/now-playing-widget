@@ -6,7 +6,7 @@ import (
 )
 
 func getBG(w http.ResponseWriter, r *http.Request) {
-	uid := r.URL.Query().Get("uid")
+	uid := r.Header.Get("uid")
 	output, err := get(uid)
 	if err != nil {
 		fmt.Fprintf(w, "Error: %v", err)
@@ -23,7 +23,7 @@ func getBG(w http.ResponseWriter, r *http.Request) {
 }
 
 func getTC(w http.ResponseWriter, r *http.Request) {
-	uid := r.URL.Query().Get("uid")
+	uid := r.Header.Get("uid")
 	output, err := get(uid)
 	if err != nil {
 		fmt.Fprintf(w, "Error: %v", err)
@@ -40,7 +40,7 @@ func getTC(w http.ResponseWriter, r *http.Request) {
 }
 
 func getSTC(w http.ResponseWriter, r *http.Request) {
-	uid := r.URL.Query().Get("uid")
+	uid := r.Header.Get("uid")
 	output, err := get(uid)
 	if err != nil {
 		fmt.Fprintf(w, "Error: %v", err)
