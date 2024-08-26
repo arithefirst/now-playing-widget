@@ -29,7 +29,7 @@ type user struct {
 func get(uid string) (*user, error) {
 	serverData := mongoServer{
 		Host:       "",
-		Port:       0,
+		Port:       27017,
 		DB:         "config",
 		Collection: "users",
 	}
@@ -37,7 +37,7 @@ func get(uid string) (*user, error) {
 	ctx := context.TODO()
 
 	// Set the mongoDB server location
-	client, err := mongo.NewClient(options.Client().ApplyURI(serverData.Host + string(serverData.Port)))
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://" + serverData.Host + ":" + fmt.Sprint(serverData.Port)))
 	if err != nil {
 		panic(err)
 	}
