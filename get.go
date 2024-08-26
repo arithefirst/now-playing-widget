@@ -7,16 +7,20 @@ import (
 
 func getBG(w http.ResponseWriter, r *http.Request) {
 	uid := r.Header.Get("uid")
-	output, err := get(uid)
-	if err != nil {
-		fmt.Fprintf(w, "Error: %v", err)
+	if uid == "" {
+		fmt.Fprintf(w, "Error: UID Header not recived.")
 	} else {
-		// Check to see if the value is not set
-		if output.Empty {
-			// Return default if not set
-			fmt.Fprintf(w, "#181A1B")
+		output, err := get(uid)
+		if err != nil {
+			fmt.Fprintf(w, "Error: %v", err)
 		} else {
-			fmt.Fprintf(w, output.BG)
+			// Check to see if the value is not set
+			if output.Empty {
+				// Return default if not set
+				fmt.Fprintf(w, "#181A1B")
+			} else {
+				fmt.Fprintf(w, output.BG)
+			}
 		}
 	}
 
@@ -24,16 +28,20 @@ func getBG(w http.ResponseWriter, r *http.Request) {
 
 func getTC(w http.ResponseWriter, r *http.Request) {
 	uid := r.Header.Get("uid")
-	output, err := get(uid)
-	if err != nil {
-		fmt.Fprintf(w, "Error: %v", err)
+	if uid == "" {
+		fmt.Fprintf(w, "Error: UID Header not recived.")
 	} else {
-		// Check to see if the value is not set
-		if output.Empty {
-			// Return default if not set
-			fmt.Fprintf(w, "#FFFFFF")
+		output, err := get(uid)
+		if err != nil {
+			fmt.Fprintf(w, "Error: %v", err)
 		} else {
-			fmt.Fprintf(w, output.TC)
+			// Check to see if the value is not set
+			if output.Empty {
+				// Return default if not set
+				fmt.Fprintf(w, "#FFFFFF")
+			} else {
+				fmt.Fprintf(w, output.TC)
+			}
 		}
 	}
 
@@ -41,16 +49,20 @@ func getTC(w http.ResponseWriter, r *http.Request) {
 
 func getSTC(w http.ResponseWriter, r *http.Request) {
 	uid := r.Header.Get("uid")
-	output, err := get(uid)
-	if err != nil {
-		fmt.Fprintf(w, "Error: %v", err)
+	if uid == "" {
+		fmt.Fprintf(w, "Error: UID Header not recived.")
 	} else {
-		// Check to see if the value is not set
-		if output.Empty {
-			// Return default if not set
-			fmt.Fprintf(w, "#D3D3D3")
+		output, err := get(uid)
+		if err != nil {
+			fmt.Fprintf(w, "Error: %v", err)
 		} else {
-			fmt.Fprintf(w, output.STC)
+			// Check to see if the value is not set
+			if output.Empty {
+				// Return default if not set
+				fmt.Fprintf(w, "#D3D3D3")
+			} else {
+				fmt.Fprintf(w, output.STC)
+			}
 		}
 	}
 }
