@@ -8,13 +8,13 @@ import (
 // Function to create the json responses for the getX() funcs
 func sendJsonGet(hex string, err string) string {
 	if hex == "null" {
-		json := "{\"hex\":null,\"err\":\"" + err + "\"}"
+		json := fmt.Sprintf("{\"hex\":%v,\"err\":\"%v\"}", "null", err)
 		return json
 	} else if err == "null" {
-		json := "{\"hex\":\"" + hex + "\",\"err\":null}"
+		json := fmt.Sprintf("{\"hex\":\"%v\",\"err\":%v}", hex, "null")
 		return json
 	} else {
-		json := "{\"hex\":\"" + hex + "\",\"err\":\"" + err + "\"}"
+		json := fmt.Sprintf("{\"hex\":\"%v\",\"err\":\"%v\"}", hex, err)
 		return json
 	}
 }

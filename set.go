@@ -7,10 +7,10 @@ import (
 
 func sendJsonSet(upsert int64, mod int64, err string) string {
 	if err == "null" {
-		json := "{\"modified\": " + fmt.Sprint(mod) + ",\"inserted\": " + fmt.Sprint(upsert) + ", \"err\": null}"
+		json := fmt.Sprintf("{\"inserted\":%d,\"modified\":%d,\"err\":null}", upsert, mod)
 		return json
 	} else {
-		json := "{\"modified\": " + fmt.Sprint(mod) + ",\"inserted\": " + fmt.Sprint(upsert) + ", \"err\": " + err + "}"
+		json := fmt.Sprintf("{\"inserted\":%d,\"modified\":%d,\"err\":\"%v\"}", upsert, mod, err)
 		return json
 	}
 }
