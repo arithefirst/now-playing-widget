@@ -15,7 +15,7 @@ func main() {
 	http.HandleFunc("/api/v1/get/tc", getTC)
 	http.HandleFunc("/api/v1/get/bg", getBG)
 
-	// Set the functions for the set endpoints
+	// Set the functions for the set endpoint
 	http.HandleFunc("/api/v1/set", setConf)
 
 	// Serve the files in static/

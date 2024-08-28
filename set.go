@@ -8,6 +8,7 @@ import (
 	"strings"
 )
 
+// Function to create the json responses for the setConf() func
 func sendJsonSet(upsert int64, mod int64, err string) string {
 	if err == "null" {
 		json := fmt.Sprintf("{\"inserted\":%d,\"modified\":%d,\"err\":null}", upsert, mod)
@@ -21,17 +22,22 @@ func sendJsonSet(upsert int64, mod int64, err string) string {
 func authCheck(auth string) string {
 	client := &http.Client{}
 
+	// Prepare http request
 	req, err := http.NewRequest(http.MethodGet, "https://api.spotify.com/v1/me", nil)
 	if err != nil {
 		return err.Error()
 	}
+
+	// Add the auth header to the http request
 	req.Header.Set("Authorization", auth)
 
+	// Send request
 	res, err := client.Do(req)
 	if err != nil {
 		return err.Error()
 	}
 
+	// Read request body
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return err.Error()
@@ -44,6 +50,8 @@ func authCheck(auth string) string {
 		return err.Error()
 	}
 
+	// If the "error" field is present, return the whole body,
+	// otherwise return the ID field
 	_, errorExists := result["error"]
 	if errorExists {
 		return string(body)
@@ -70,8 +78,13 @@ func setConf(w http.ResponseWriter, r *http.Request) {
 		r.URL.Query().Get("uid") == "" {
 		fmt.Fprint(w, "{\"err\":\"All inputs are required to use this endpoint\"}")
 	} else {
+		// Grab the auth header from the request
 		auth := r.Header.Get("Authorization")
+
+		// If the uid response from the authCheck() function is
+		// not the same as the user given UID, return an error
 		if r.URL.Query().Get("uid") != authCheck(auth) {
+			// Handling for each possible type of error
 			if strings.Contains(authCheck(auth), "No token provided") {
 				fmt.Fprint(w, "{\"err\":\"No Token Provided\"}")
 			} else if strings.Contains(authCheck(auth), "The access token expired") {
@@ -82,11 +95,15 @@ func setConf(w http.ResponseWriter, r *http.Request) {
 				fmt.Fprint(w, "{\"err\":\"You cannot modify another user's configuration\"}")
 			}
 		} else {
+			// Default the alignRight var to false, set to true if
+			// the value of "right" in the querystring is "true"
 			var alignRight bool = false
 			if r.URL.Query().Get("right") == "true" {
 				alignRight = true
 			}
 
+			// Populate the user struct with the paramaters from
+			// the querystring
 			updateParams := user{
 				BG:    r.URL.Query().Get("bg"),
 				TC:    r.URL.Query().Get("tc"),
@@ -95,10 +112,14 @@ func setConf(w http.ResponseWriter, r *http.Request) {
 				UID:   r.URL.Query().Get("uid"),
 			}
 
+			// Call the function to udpate the database with the
+			// paramaters from the querystring
+
 			result, err := set(updateParams)
 			if err != nil {
 				fmt.Fprint(w, sendJsonSet(0, 0, err.Error()))
 			} else {
+				// Return the number of docs modified or inserted
 				fmt.Fprint(w, sendJsonSet(result.UpsertedCount, result.ModifiedCount, "null"))
 			}
 		}
