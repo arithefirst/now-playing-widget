@@ -20,7 +20,10 @@ func sendJsonGet(hex string, err string) string {
 }
 
 func getBG(w http.ResponseWriter, r *http.Request) {
+	// Set the content-type header to json and utf-8
 	w.Header().Set("content-type", "application/json; charset=utf-8")
+
+	// Get the uid variable from the querystring
 	uid := r.URL.Query().Get("uid")
 
 	if uid == "" {
@@ -44,7 +47,10 @@ func getBG(w http.ResponseWriter, r *http.Request) {
 }
 
 func getTC(w http.ResponseWriter, r *http.Request) {
+	// Set the content-type header to json and utf-8
 	w.Header().Set("content-type", "application/json; charset=utf-8")
+
+	// Get the uid variable from the querystring
 	uid := r.URL.Query().Get("uid")
 
 	if uid == "" {
@@ -68,7 +74,10 @@ func getTC(w http.ResponseWriter, r *http.Request) {
 }
 
 func getSTC(w http.ResponseWriter, r *http.Request) {
+	// Set the content-type header to json and utf-8
 	w.Header().Set("content-type", "application/json; charset=utf-8")
+
+	// Get the uid variable from the querystring
 	uid := r.URL.Query().Get("uid")
 
 	if uid == "" {
