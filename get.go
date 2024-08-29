@@ -98,3 +98,29 @@ func getSTC(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
+func getRight(w http.ResponseWriter, r *http.Request) {
+	// Set the content-type header to json and utf-8
+	w.Header().Set("content-type", "application/json; charset=utf-8")
+
+	// Get the uid variable from the querystring
+	uid := r.URL.Query().Get("uid")
+
+	if uid == "" {
+		// if uid is empty return an error
+		fmt.Fprint(w, sendJsonGet("null", "uid not present in querystring"))
+	} else {
+		output, err := get(uid)
+		if err != nil {
+			fmt.Fprint(w, sendJsonGet("null", err.Error()))
+		} else {
+			// Check to see if the value is not set
+			if output.Empty {
+				// Return default if not set
+				fmt.Fprint(w, sendJsonGet("false", "No value found: Default returned"))
+			} else {
+				fmt.Fprint(w, sendJsonGet(fmt.Sprint(output.RIGHT), "null"))
+			}
+		}
+	}
+}
