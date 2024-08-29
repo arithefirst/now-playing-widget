@@ -14,6 +14,7 @@ func main() {
 	http.HandleFunc("/api/v1/get/stc", getSTC)
 	http.HandleFunc("/api/v1/get/tc", getTC)
 	http.HandleFunc("/api/v1/get/bg", getBG)
+	http.HandleFunc("/api/v1/get/right", getRight)
 
 	// Set the functions for the set endpoint
 	http.HandleFunc("/api/v1/set", setConf)
