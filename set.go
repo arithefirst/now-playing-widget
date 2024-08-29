@@ -67,7 +67,7 @@ func authCheck(auth string) string {
 }
 
 func setConf(w http.ResponseWriter, r *http.Request) {
-	// Set the content-type header to json
+	// Set the content-type header to json and utf-8
 	w.Header().Set("content-type", "application/json; charset=utf-8")
 
 	// Check to see if bg, tc, stc, right, and uid are present in the querystring
