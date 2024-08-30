@@ -1,7 +1,10 @@
 let timeoutId;
 
+// Set the base URL & Client ID of your endpoint Below
+const baseurl = "http://127.0.0.1:5500";
+const client_id = "CLIENT_ID_HERE";
+
 function tokenRefresh() {
-  var client_id = "CLIENT_ID_HERE";
   var redirect_uri = window.location.href.split("#")[0].replace(/\/$/, "");
   var scope = "user-read-playback-state";
   var url = "https://accounts.spotify.com/authorize";
@@ -23,9 +26,9 @@ function truncateString(str, maxLength) {
 }
 
 function getNowPlaying() {
+  // Pull the authtoken from the URL; If not in the url try to get a new one
   console.log("Refreshing...");
-  const currentUrl = window.location.href;
-  const fragment = currentUrl.split("#")[1];
+  const fragment = window.location.href.split("#")[1];
 
   if (fragment) {
     const authToken = fragment.split("=")[1];
@@ -36,6 +39,7 @@ function getNowPlaying() {
       },
     };
 
+    // Set timeout so getNowPlaying() reruns every 5000ms
     timeoutId = setTimeout(getNowPlaying, 5000);
     fetch("https://api.spotify.com/v1/me/player", options)
       .then((response) => {
@@ -45,6 +49,7 @@ function getNowPlaying() {
         return response.json();
       })
       .then((data) => {
+        // Load the data from the json response into the required elements using jQuery
         const jsonData = data;
         $("body").css("opacity", "1");
         $("#song-l").text(truncateString(jsonData["item"]["name"], 20));
@@ -59,6 +64,7 @@ function getNowPlaying() {
       })
       .catch((error) => {
         console.error("Error:", error);
+        // Check to see if the error is a network error, if not hide the body
         if (error.message.includes("Network")) {
           tokenRefresh();
         } else {
@@ -70,29 +76,69 @@ function getNowPlaying() {
   }
 }
 
-window.onload = function () {
+// Function to get the UID of a currently signed in user
+async function getUid() {
+  // No need to check for fragment since this is only ever called
+  // after running getNowPlaying()
+
+  const authToken = window.location.href.split("#")[1].split("=")[1];
+  try {
+    const response = await fetch("https://api.spotify.com/v1/me", {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.id;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+}
+
+// Function to get the hex value for a user from the API
+async function getHex(uid, type) {
+  try {
+    const response = await fetch(`${baseurl}/api/v1/get/${type.toLowerCase()}?uid=${uid}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    if (data.err != null && data.err != "No value found: Default returned") {
+      console.log(data.err);
+    }
+    return data.hex;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+}
+
+// On page load:
+window.onload = async function () {
   getNowPlaying();
-  console.log('Retrived color cookies: {"STC": "' + Cookies.get("STC") + '",' + '"TC": "' + Cookies.get("TC") + '",' + '"BG": "' + Cookies.get("BG") + '"}');
-  // If the cookies are not set, use default colors
-  if (Cookies.get("STC") != undefined) {
-    $("html").get(0).style.setProperty("--smalltext-color", Cookies.get("STC"));
-  } else {
-    $("html").get(0).style.setProperty("--smalltext-color", "#D3D3D3");
-  }
 
-  if (Cookies.get("TC") != undefined) {
-    $("html").get(0).style.setProperty("--text-color", Cookies.get("TC"));
-  } else {
-    $("html").get(0).style.setProperty("--text-color", "#FFFFFF");
-  }
+  const uid = await getUid();
+  const stc = await getHex(uid, "stc");
+  const tc = await getHex(uid, "tc");
+  const bg = await getHex(uid, "bg");
+  const right = await getHex(uid, "right");
+  console.log(`Got Config: {STC: ${stc}, TC: ${tc}, BG: ${bg}, RIGHT: ${right}`);
 
-  if (Cookies.get("BG") != undefined) {
-    $("html").get(0).style.setProperty("--background-color", Cookies.get("BG"));
-  } else {
-    $("html").get(0).style.setProperty("--background-color", "#181A1B");
-  }
+  // Set the CSS color variables based on the response from the API
+  $("html").get(0).style.setProperty("--smalltext-color", stc);
+  $("html").get(0).style.setProperty("--text-color", tc);
+  $("html").get(0).style.setProperty("--background-color", bg);
 
-  if (Cookies.get("RIGHT") == "true") {
+  // If the right var is "true", hide the ALL (Align Left)
+  // class and make the ALR (Aligh Right) class visible
+
+  if (right == "true") {
     $("#ALR").css("display", "inline");
     $("#ALL").css("display", "none");
   } else {
