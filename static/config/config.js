@@ -1,4 +1,8 @@
-function setCSS() {
+// Set the base URL & Client ID of your endpoint Below
+const baseurl = "http://127.0.0.1:5500";
+const client_id = "CLIENT_ID_HERE";
+
+async function setCSS() {
   $("html").get(0).style.setProperty("--smalltext-color", $("#stc").val());
   $("html").get(0).style.setProperty("--text-color", $("#tc").val());
   $("html").get(0).style.setProperty("--background-color", $("#bg").val());
@@ -9,42 +13,123 @@ function setCSS() {
     $("#ALR").css("display", "none");
     $("#ALL").css("display", "block");
   }
-  generateCookies($("#tc").val(), $("#bg").val(), $("#stc").val());
+  await saveConf($("#tc").val(), $("#bg").val(), $("#stc").val(), $("#toggle").is(":checked"));
 }
 
-function generateCookies() {
-  var expiresDays = (1000 * 365 * 24 * 60 * 60 * 1000) / (24 * 60 * 60 * 1000);
-  Cookies.set("STC", $("#stc").val(), { expires: expiresDays, sameSite: "none" });
-  Cookies.set("TC", $("#tc").val(), { expires: expiresDays, sameSite: "none" });
-  Cookies.set("BG", $("#bg").val(), { expires: expiresDays, sameSite: "none" });
-  Cookies.set("RIGHT", $("#toggle").is(":checked"), { expires: expiresDays, sameSite: "none" });
-  console.log(`Set Cookies: {STC: ${$("#stc").val()}, TC: ${$("#tc").val()}, BG: ${$("#bg").val()}, RIGHT: ${$("#toggle").is(":checked")}}`);
+// Funciton for getting the spotify api token
+function tokenRefresh() {
+  var redirect_uri = window.location.href.split("#")[0].replace(/\/$/, "");
+  var scope = "user-read-playback-state";
+  var url = "https://accounts.spotify.com/authorize";
+  url += "?response_type=token";
+  url += "&client_id=" + encodeURIComponent(client_id);
+  url += "&scope=" + encodeURIComponent(scope);
+  url += "&redirect_uri=" + encodeURIComponent(redirect_uri);
+
+  console.log(url);
+  window.location.replace(url);
 }
 
-function getCookies() {
-  console.log(`Got Cookies: {STC: ${Cookies.get("STC")}, TC: ${Cookies.get("TC")}, BG: ${Cookies.get("BG")}, RIGHT: ${Cookies.get("RIGHT")}}`);
-  // If the cookies are not set, use default colors
-  if (Cookies.get("STC") != undefined) {
-    $("#stc").val(Cookies.get("STC"));
+async function saveConf(tc, bg, stc, right) {
+  // Pull the authtoken from the URL
+  const fragment = window.location.href.split("#")[1];
+  // If token not present in url, reload
+  if (!fragment) {
+    tokenRefresh();
   } else {
-    $("#stc").val("#D3D3D3");
-  }
+    const uid = await getUid();
+    const authToken = fragment.split("=")[1];
+    try {
+      const response = await fetch(
+        `${baseurl}/api/v1/set?tc=${encodeURIComponent(tc)}&bg=${encodeURIComponent(bg)}&stc=${encodeURIComponent(stc)}&right=${encodeURIComponent(right)}&uid=${encodeURIComponent(uid)}`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
 
-  if (Cookies.get("TC") != undefined) {
-    $("#tc").val(Cookies.get("TC"));
-  } else {
-    $("#tc").val("#FFFFFF");
-  }
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-  if (Cookies.get("BG") != undefined) {
-    $("#bg").val(Cookies.get("BG"));
-  } else {
-    $("#bg").val("#181A1B");
+      const data = await response.json();
+      console.log(`Saved Config: {STC: ${stc}, TC: ${tc}, BG: ${bg}, RIGHT: ${right}`);
+    } catch (error) {
+      console.error("Error:", error);
+      throw error;
+    }
   }
 }
 
-window.onload = function () {
-  getCookies();
+// Function to get the hex value for a user from the API
+async function getHex(uid, type) {
+  try {
+    const response = await fetch(`${baseurl}/api/v1/get/${type.toLowerCase()}?uid=${uid}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    if (data.err != null && data.err != "No value found: Default returned") {
+      console.log(data.err);
+    }
+    return data.hex;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+}
+
+// Function to get the UID for the currently signed in user
+async function getUid() {
+  const fragment = window.location.href.split("#")[1];
+  if (!fragment) {
+    tokenRefresh();
+  } else {
+    const authToken = fragment.split("=")[1];
+    try {
+      const response = await fetch("https://api.spotify.com/v1/me", {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.id;
+    } catch (error) {
+      console.error("Error:", error);
+      throw error;
+    }
+  }
+}
+
+async function getConf() {
+  const uid = await getUid();
+  const stc = await getHex(uid, "stc");
+  const tc = await getHex(uid, "tc");
+  const bg = await getHex(uid, "bg");
+  const right = await getHex(uid, "right");
+  console.log(`Got Config: {STC: ${stc}, TC: ${tc}, BG: ${bg}, RIGHT: ${right}`);
+
+  // Load the config
+  $("#stc").val(stc);
+  $("#tc").val(tc);
+  $("#bg").val(bg);
+
+  // Set the toggle/align
+  if (right == "true") {
+    $("#toggle").prop("checked", true).trigger("change");
+  } else {
+    $("#toggle").prop("checked", false).trigger("change");
+  }
+}
+
+window.onload = async function () {
+  await getConf();
   $("html").get(0).style.setProperty("--smalltext-color", $("#stc").val());
   $("html").get(0).style.setProperty("--text-color", $("#tc").val());
   $("html").get(0).style.setProperty("--background-color", $("#bg").val());
