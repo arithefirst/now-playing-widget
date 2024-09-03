@@ -27,7 +27,12 @@ func main() {
 	router.StaticFile("/styles.css", "./static/styles.css")
 	router.StaticFile("/jquery-3.7.1.min.js", "./static/jquery-3.7.1.min.js")
 
-	router.Static("/config", "./static/config")
+	// Serve the files in static/config
+	router.StaticFile("/config", "./static/config/index.html")
+	router.StaticFile("/config.js", "./static/config/config.js")
+	router.StaticFile("/config/styles.css", "./static/config/styles.css")
+	router.StaticFile("/toggle.css", "./static/config/toggle.css")
+	router.StaticFile("/config/jquery-3.7.1.min.js", "./static/jquery-3.7.1.min.js")
 
 	// Start the server
 	fmt.Printf("Server started on port %v\n", port)
