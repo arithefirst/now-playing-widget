@@ -9,7 +9,9 @@ func main() {
 	// Set the port for the server to run on
 	var port uint16 = 5500
 
-	//gin.SetMode(gin.ReleaseMode)
+	// Comment out the below to enable debug mode
+	gin.SetMode(gin.ReleaseMode)
+
 	router := gin.Default()
 
 	// Set the functions for the get endpoints
