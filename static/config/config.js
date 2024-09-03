@@ -16,7 +16,7 @@ async function setCSS() {
   await saveConf($("#tc").val(), $("#bg").val(), $("#stc").val(), $("#toggle").is(":checked"));
 }
 
-// Funciton for getting the spotify api token
+// Function for getting the spotify api token
 function tokenRefresh() {
   const redirect_uri = window.location.href.split("#")[0].replace(/\/$/, "");
   const scope = "user-read-playback-state";
@@ -40,14 +40,23 @@ async function saveConf(tc, bg, stc, right) {
     const uid = await getUid();
     const authToken = fragment.split("=")[1];
     try {
-      const response = await fetch(
-        `${baseurl}/api/v1/set?tc=${encodeURIComponent(tc)}&bg=${encodeURIComponent(bg)}&stc=${encodeURIComponent(stc)}&right=${encodeURIComponent(right)}&uid=${encodeURIComponent(uid)}`,
-        {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
-      );
+
+      const jsonBody = {
+        "uid": uid,
+        "bg": bg,
+        "stc": stc,
+        "tc": stc,
+        "right": right
+      };
+
+      const response = await fetch(`${baseurl}/api/v1/set`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
+        },
+        body: JSON.stringify(jsonBody),
+      })
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

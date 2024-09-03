@@ -21,7 +21,7 @@ func main() {
 	router.GET("/api/v1/get/right", getRight)
 
 	// Set the functions for the set endpoint
-	router.GET("/api/v1/set", setConf)
+	router.POST("/api/v1/set", setConf)
 
 	// Serve the files in static/
 	router.StaticFile("/", "./static/index.html")

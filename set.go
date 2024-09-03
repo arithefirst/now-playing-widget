@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"io"
 	"net/http"
@@ -9,20 +10,10 @@ import (
 )
 
 type jsonSet struct {
-	upsert int64
-	mod    int64
-	err    string
-}
-
-// Function to create the json responses for the setConf() func
-func sendJsonSet(upsert int64, mod int64, err string) jsonSet {
-	if err == "null" {
-		jsonReturn := jsonSet{upsert: upsert, mod: mod, err: "null"}
-		return jsonReturn
-	} else {
-		jsonReturn := jsonSet{upsert: upsert, mod: mod, err: err}
-		return jsonReturn
-	}
+	Upsert int64 `json:"upsert"`
+	Mod    int64 `json:"mod"`
+	Err    error `json:"err"`
+	Values user  `json:"values"`
 }
 
 func authCheck(auth string) string {
@@ -73,62 +64,72 @@ func authCheck(auth string) string {
 }
 
 func setConf(c *gin.Context) {
-	// Set the content-type header to json and utf-8
 	c.Header("content-type", "application/json; charset=utf-8")
 
-	// Check to see if bg, tc, stc, right, and uid are present in the querystring
-	if c.Query("bg") == "" ||
-		c.Query("tc") == "" ||
-		c.Query("stc") == "" ||
-		c.Query("right") == "" ||
-		c.Query("uid") == "" {
-		c.IndentedJSON(http.StatusOK, "{\"err\":\"All inputs are required to use this endpoint\"}")
-	} else {
-		// Grab the auth header from the request
-		auth := c.GetHeader("Authorization")
+	type requestBody struct {
+		UID   string `json:"uid"`
+		BG    string `json:"bg"`
+		TC    string `json:"tc"`
+		STC   string `json:"stc"`
+		RIGHT bool   `json:"right"`
+	}
 
-		// If the uid response from the authCheck() function is
-		// not the same as the user given UID, return an error
-		if c.Query("uid") != authCheck(auth) {
-			// Handling for each possible type of error
-			if strings.Contains(authCheck(auth), "No token provided") {
-				c.IndentedJSON(http.StatusOK, "{\"err\":\"No Token Provided\"}")
-			} else if strings.Contains(authCheck(auth), "The access token expired") {
-				c.IndentedJSON(http.StatusOK, "{\"err\":\"The access token expired\"}")
-			} else if strings.Contains(authCheck(auth), "Only valid bearer authentication supported") {
-				c.IndentedJSON(http.StatusOK, "{\"err\":\"Only valid bearer authentication supported\"}")
-			} else {
-				c.IndentedJSON(http.StatusOK, "{\"err\":\"You cannot modify another user's configuration\"}")
-			}
+	type returnErr struct {
+		Err string `json:"err"`
+	}
+
+	var postRequest requestBody
+	err := c.BindJSON(&postRequest)
+	if err != nil {
+		fmt.Printf("err: %v\n", err)
+		return
+	}
+
+	// Check to see if any of the values are empty
+	if postRequest.UID == "" || postRequest.BG == "" || postRequest.STC == "" || postRequest.TC == "" {
+		err := returnErr{Err: "All fields must be present"}
+		c.IndentedJSON(http.StatusBadRequest, err)
+		return
+	}
+
+	// Get the current user's UID from the spotify
+	// API and ensure it matches the specified UID
+	auth := c.GetHeader("Authorization")
+	if postRequest.UID != authCheck(auth) {
+		// Handling for each possible type of error
+		if strings.Contains(authCheck(auth), "No token provided") {
+			err := returnErr{Err: "No token provided"}
+			c.IndentedJSON(http.StatusUnauthorized, err)
+			return
+		} else if strings.Contains(authCheck(auth), "The access token expired") {
+			err := returnErr{Err: "The access token expired"}
+			c.IndentedJSON(http.StatusUnauthorized, err)
+			return
+		} else if strings.Contains(authCheck(auth), "Only valid bearer authentication supported") {
+			err := returnErr{Err: "Only valid bearer authentication supported"}
+			c.IndentedJSON(http.StatusUnauthorized, err)
+			return
 		} else {
-			// Default the alignRight var to false, set to true if
-			// the value of "right" in the querystring is "true"
-			var alignRight bool = false
-			if c.Query("right") == "true" {
-				alignRight = true
-			}
-
-			// Populate the user struct with the parameters from
-			// the querystring
-			updateParams := user{
-				BG:    c.Query("bg"),
-				TC:    c.Query("tc"),
-				STC:   c.Query("stc"),
-				RIGHT: alignRight,
-				UID:   c.Query("uid"),
-			}
-
-			// Call the function to update the database with the
-			// parameters from the querystring
-
-			result, err := set(updateParams)
-			if err != nil {
-				c.IndentedJSON(http.StatusOK, sendJsonSet(0, 0, err.Error()))
-			} else {
-				// Return the number of docs modified or inserted
-				c.IndentedJSON(http.StatusOK, sendJsonSet(result.UpsertedCount, result.ModifiedCount, "null"))
-			}
+			err := returnErr{Err: "You cannot modify another user's configuration"}
+			c.IndentedJSON(http.StatusUnauthorized, err)
+			return
 		}
+	}
+
+	updateParams := user{
+		UID:   postRequest.UID,
+		BG:    postRequest.BG,
+		TC:    postRequest.TC,
+		STC:   postRequest.STC,
+		RIGHT: postRequest.RIGHT,
+	}
+
+	result, err := set(updateParams)
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, jsonSet{Upsert: 0, Mod: 0, Err: err, Values: updateParams})
+	} else {
+		// Return the number of docs modified or inserted
+		c.IndentedJSON(http.StatusOK, jsonSet{Upsert: result.UpsertedCount, Mod: result.ModifiedCount, Err: nil, Values: updateParams})
 	}
 
 }
