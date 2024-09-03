@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 )
 
 func main() {
@@ -25,6 +24,6 @@ func main() {
 
 	// Start the server
 	fmt.Printf("Server started on port %v\n", port)
-	var portString string = ":" + strconv.Itoa(int(port))
+	var portString = fmt.Sprintf(":%v", port)
 	http.ListenAndServe(portString, nil)
 }
