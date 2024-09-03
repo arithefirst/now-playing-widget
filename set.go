@@ -2,20 +2,26 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
+	"github.com/gin-gonic/gin"
 	"io"
 	"net/http"
 	"strings"
 )
 
+type jsonSet struct {
+	upsert int64
+	mod    int64
+	err    string
+}
+
 // Function to create the json responses for the setConf() func
-func sendJsonSet(upsert int64, mod int64, err string) string {
+func sendJsonSet(upsert int64, mod int64, err string) jsonSet {
 	if err == "null" {
-		json := fmt.Sprintf("{\"inserted\":%d,\"modified\":%d,\"err\":null}", upsert, mod)
-		return json
+		jsonReturn := jsonSet{upsert: upsert, mod: mod, err: "null"}
+		return jsonReturn
 	} else {
-		json := fmt.Sprintf("{\"inserted\":%d,\"modified\":%d,\"err\":\"%v\"}", upsert, mod, err)
-		return json
+		jsonReturn := jsonSet{upsert: upsert, mod: mod, err: err}
+		return jsonReturn
 	}
 }
 
@@ -66,61 +72,61 @@ func authCheck(auth string) string {
 
 }
 
-func setConf(w http.ResponseWriter, r *http.Request) {
+func setConf(c *gin.Context) {
 	// Set the content-type header to json and utf-8
-	w.Header().Set("content-type", "application/json; charset=utf-8")
+	c.Header("content-type", "application/json; charset=utf-8")
 
 	// Check to see if bg, tc, stc, right, and uid are present in the querystring
-	if r.URL.Query().Get("bg") == "" ||
-		r.URL.Query().Get("tc") == "" ||
-		r.URL.Query().Get("stc") == "" ||
-		r.URL.Query().Get("right") == "" ||
-		r.URL.Query().Get("uid") == "" {
-		fmt.Fprint(w, "{\"err\":\"All inputs are required to use this endpoint\"}")
+	if c.Query("bg") == "" ||
+		c.Query("tc") == "" ||
+		c.Query("stc") == "" ||
+		c.Query("right") == "" ||
+		c.Query("uid") == "" {
+		c.IndentedJSON(http.StatusOK, "{\"err\":\"All inputs are required to use this endpoint\"}")
 	} else {
 		// Grab the auth header from the request
-		auth := r.Header.Get("Authorization")
+		auth := c.GetHeader("Authorization")
 
 		// If the uid response from the authCheck() function is
 		// not the same as the user given UID, return an error
-		if r.URL.Query().Get("uid") != authCheck(auth) {
+		if c.Query("uid") != authCheck(auth) {
 			// Handling for each possible type of error
 			if strings.Contains(authCheck(auth), "No token provided") {
-				fmt.Fprint(w, "{\"err\":\"No Token Provided\"}")
+				c.IndentedJSON(http.StatusOK, "{\"err\":\"No Token Provided\"}")
 			} else if strings.Contains(authCheck(auth), "The access token expired") {
-				fmt.Fprint(w, "{\"err\":\"The access token expired\"}")
+				c.IndentedJSON(http.StatusOK, "{\"err\":\"The access token expired\"}")
 			} else if strings.Contains(authCheck(auth), "Only valid bearer authentication supported") {
-				fmt.Fprint(w, "{\"err\":\"Only valid bearer authentication supported\"}")
+				c.IndentedJSON(http.StatusOK, "{\"err\":\"Only valid bearer authentication supported\"}")
 			} else {
-				fmt.Fprint(w, "{\"err\":\"You cannot modify another user's configuration\"}")
+				c.IndentedJSON(http.StatusOK, "{\"err\":\"You cannot modify another user's configuration\"}")
 			}
 		} else {
 			// Default the alignRight var to false, set to true if
 			// the value of "right" in the querystring is "true"
 			var alignRight bool = false
-			if r.URL.Query().Get("right") == "true" {
+			if c.Query("right") == "true" {
 				alignRight = true
 			}
 
-			// Populate the user struct with the paramaters from
+			// Populate the user struct with the parameters from
 			// the querystring
 			updateParams := user{
-				BG:    r.URL.Query().Get("bg"),
-				TC:    r.URL.Query().Get("tc"),
-				STC:   r.URL.Query().Get("stc"),
+				BG:    c.Query("bg"),
+				TC:    c.Query("tc"),
+				STC:   c.Query("stc"),
 				RIGHT: alignRight,
-				UID:   r.URL.Query().Get("uid"),
+				UID:   c.Query("uid"),
 			}
 
-			// Call the function to udpate the database with the
-			// paramaters from the querystring
+			// Call the function to update the database with the
+			// parameters from the querystring
 
 			result, err := set(updateParams)
 			if err != nil {
-				fmt.Fprint(w, sendJsonSet(0, 0, err.Error()))
+				c.IndentedJSON(http.StatusOK, sendJsonSet(0, 0, err.Error()))
 			} else {
 				// Return the number of docs modified or inserted
-				fmt.Fprint(w, sendJsonSet(result.UpsertedCount, result.ModifiedCount, "null"))
+				c.IndentedJSON(http.StatusOK, sendJsonSet(result.UpsertedCount, result.ModifiedCount, "null"))
 			}
 		}
 	}

@@ -2,125 +2,118 @@ package main
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-// Function to create the json responses for the getX() funcs
-func sendJsonGet(hex string, err string) string {
+type jsonGet struct {
+	Hex string `json:"hex"`
+	Err string `json:"err"`
+}
+
+// Function to create the json responses for the getX() functions
+func sendJsonGet(hex string, err string) jsonGet {
 	if hex == "null" {
-		json := fmt.Sprintf("{\"hex\":%v,\"err\":\"%v\"}", "null", err)
+		json := jsonGet{Err: err, Hex: "null"}
 		return json
 	} else if err == "null" {
-		json := fmt.Sprintf("{\"hex\":\"%v\",\"err\":%v}", hex, "null")
+		json := jsonGet{Err: "null", Hex: hex}
 		return json
 	} else {
-		json := fmt.Sprintf("{\"hex\":\"%v\",\"err\":\"%v\"}", hex, err)
+		json := jsonGet{Hex: hex, Err: err}
 		return json
 	}
 }
 
-func getBG(w http.ResponseWriter, r *http.Request) {
-	// Set the content-type header to json and utf-8
-	w.Header().Set("content-type", "application/json; charset=utf-8")
-
-	// Get the uid variable from the querystring
-	uid := r.URL.Query().Get("uid")
+func getBG(c *gin.Context) {
+	// Set the content-type header to json and uid querystring var
+	c.Header("content-type", "application/json; charset=utf-8")
+	uid := c.Query("uid")
 
 	if uid == "" {
-		// if uid is empty return an error
-		fmt.Fprint(w, sendJsonGet("null", "uid not present in querystring"))
+		c.IndentedJSON(http.StatusOK, sendJsonGet("null", "uid not present in querystring"))
 	} else {
 		output, err := get(uid)
 		if err != nil {
-			fmt.Fprint(w, sendJsonGet("null", err.Error()))
+			c.IndentedJSON(http.StatusOK, sendJsonGet("null", err.Error()))
 		} else {
 			// Check to see if the value is not set
 			if output.Empty {
 				// Return default if not set
-				fmt.Fprint(w, sendJsonGet("#181A1B", "No value found: Default returned"))
+				c.IndentedJSON(http.StatusOK, sendJsonGet("#181A1B", "No value found: Default returned"))
 			} else {
-				fmt.Fprint(w, sendJsonGet(output.BG, "null"))
+				c.IndentedJSON(http.StatusOK, sendJsonGet(output.BG, "null"))
 			}
 		}
 	}
 
 }
 
-func getTC(w http.ResponseWriter, r *http.Request) {
-	// Set the content-type header to json and utf-8
-	w.Header().Set("content-type", "application/json; charset=utf-8")
-
-	// Get the uid variable from the querystring
-	uid := r.URL.Query().Get("uid")
+func getTC(c *gin.Context) {
+	// Set the content-type header to json and uid querystring var
+	c.Header("content-type", "application/json; charset=utf-8")
+	uid := c.Query("uid")
 
 	if uid == "" {
-		// if uid is empty return an error
-		fmt.Fprint(w, sendJsonGet("null", "uid not present in querystring"))
+		c.IndentedJSON(http.StatusOK, sendJsonGet("null", "uid not present in querystring"))
 	} else {
 		output, err := get(uid)
 		if err != nil {
-			fmt.Fprint(w, sendJsonGet("null", err.Error()))
+			c.IndentedJSON(http.StatusOK, sendJsonGet("null", err.Error()))
 		} else {
-			// Check to see if the value is not set
 			if output.Empty {
 				// Return default if not set
-				fmt.Fprint(w, sendJsonGet("#FFFFFF", "No value found: Default returned"))
+				c.IndentedJSON(http.StatusOK, sendJsonGet("#FFFFFF", "No value found: Default returned"))
 			} else {
-				fmt.Fprint(w, sendJsonGet(output.TC, "null"))
+				c.IndentedJSON(http.StatusOK, sendJsonGet(output.TC, "null"))
 			}
 		}
 	}
 
 }
 
-func getSTC(w http.ResponseWriter, r *http.Request) {
-	// Set the content-type header to json and utf-8
-	w.Header().Set("content-type", "application/json; charset=utf-8")
-
-	// Get the uid variable from the querystring
-	uid := r.URL.Query().Get("uid")
+func getSTC(c *gin.Context) {
+	// Set the content-type header to json and uid querystring var
+	c.Header("content-type", "application/json; charset=utf-8")
+	uid := c.Query("uid")
 
 	if uid == "" {
-		// if uid is empty return an error
-		fmt.Fprint(w, sendJsonGet("null", "uid not present in querystring"))
+		c.IndentedJSON(http.StatusOK, sendJsonGet("null", "uid not present in querystring"))
 	} else {
 		output, err := get(uid)
 		if err != nil {
-			fmt.Fprint(w, sendJsonGet("null", err.Error()))
+			c.IndentedJSON(http.StatusOK, sendJsonGet("null", err.Error()))
 		} else {
-			// Check to see if the value is not set
 			if output.Empty {
 				// Return default if not set
-				fmt.Fprint(w, sendJsonGet("#D3D3D3", "No value found: Default returned"))
+				c.IndentedJSON(http.StatusOK, sendJsonGet("#D3D3D3", "No value found: Default returned"))
 			} else {
-				fmt.Fprint(w, sendJsonGet(output.STC, "null"))
+				c.IndentedJSON(http.StatusOK, sendJsonGet(output.STC, "null"))
 			}
 		}
 	}
+
 }
 
-func getRight(w http.ResponseWriter, r *http.Request) {
-	// Set the content-type header to json and utf-8
-	w.Header().Set("content-type", "application/json; charset=utf-8")
-
-	// Get the uid variable from the querystring
-	uid := r.URL.Query().Get("uid")
+func getRight(c *gin.Context) {
+	// Set the content-type header to json and uid querystring var
+	c.Header("content-type", "application/json; charset=utf-8")
+	uid := c.Query("uid")
 
 	if uid == "" {
-		// if uid is empty return an error
-		fmt.Fprint(w, sendJsonGet("null", "uid not present in querystring"))
+		c.IndentedJSON(http.StatusOK, sendJsonGet("null", "uid not present in querystring"))
 	} else {
 		output, err := get(uid)
 		if err != nil {
-			fmt.Fprint(w, sendJsonGet("null", err.Error()))
+			c.IndentedJSON(http.StatusOK, sendJsonGet("null", err.Error()))
 		} else {
-			// Check to see if the value is not set
 			if output.Empty {
 				// Return default if not set
-				fmt.Fprint(w, sendJsonGet("false", "No value found: Default returned"))
+				c.IndentedJSON(http.StatusOK, sendJsonGet("false", "No value found: Default returned"))
 			} else {
-				fmt.Fprint(w, sendJsonGet(fmt.Sprint(output.RIGHT), "null"))
+				c.IndentedJSON(http.StatusOK, sendJsonGet(fmt.Sprint(output.RIGHT), "null"))
 			}
 		}
 	}
+
 }
