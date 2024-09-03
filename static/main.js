@@ -5,9 +5,9 @@ const baseurl = "http://127.0.0.1:5500";
 const client_id = "CLIENT_ID_HERE";
 
 function tokenRefresh() {
-  var redirect_uri = window.location.href.split("#")[0].replace(/\/$/, "");
-  var scope = "user-read-playback-state";
-  var url = "https://accounts.spotify.com/authorize";
+  const redirect_uri = window.location.href.split("#")[0].replace(/\/$/, "");
+  const scope = "user-read-playback-state";
+  let url = "https://accounts.spotify.com/authorize";
   url += "?response_type=token";
   url += "&client_id=" + encodeURIComponent(client_id);
   url += "&scope=" + encodeURIComponent(scope);
