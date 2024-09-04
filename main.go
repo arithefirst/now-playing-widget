@@ -16,7 +16,7 @@ func main() {
 	}
 
 	// Set the port for the server to run on
-	var port uint16 = 5500
+	var port uint16 = 80
 
 	// Comment out the below to enable debug mode
 	gin.SetMode(gin.ReleaseMode)
@@ -29,7 +29,7 @@ func main() {
 	router.GET("/api/v1/get/bg", getBG)
 	router.GET("/api/v1/get/right", getRight)
 
-	// Set the functions for the set endpoint
+	// Set the function for the set endpoint
 	router.POST("/api/v1/set", setConf)
 
 	// Serve the files in static/

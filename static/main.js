@@ -1,7 +1,7 @@
 let timeoutId;
 
 // Set the base URL & Client ID of your endpoint Below
-const baseurl = "http://127.0.0.1:5500";
+const baseurl = "http://127.0.0.1";
 const client_id = "CLIENT_ID_HERE";
 
 function tokenRefresh() {
