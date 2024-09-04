@@ -3,9 +3,18 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"os"
 )
 
 func main() {
+
+	// Ensure the MongoDB Host is in the command
+	if len(os.Args) == 1 {
+		fmt.Println("Error: MongoDB Host must be specified in the start command.")
+		fmt.Println("EX: ./nowplaying-server 10.0.0.21")
+		return
+	}
+
 	// Set the port for the server to run on
 	var port uint16 = 5500
 

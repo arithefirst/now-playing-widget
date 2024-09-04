@@ -2,8 +2,10 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
+	"os"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -28,7 +30,7 @@ type user struct {
 
 func get(uid string) (*user, error) {
 	serverData := mongoServer{
-		Host:       "10.0.0.21",
+		Host:       os.Args[1],
 		Port:       27017,
 		DB:         "config",
 		Collection: "users",
@@ -60,7 +62,7 @@ func get(uid string) (*user, error) {
 	err = coll.FindOne(ctx, filter).Decode(&output)
 
 	if err != nil {
-		if err == mongo.ErrNoDocuments {
+		if errors.Is(err, mongo.ErrNoDocuments) {
 			fmt.Printf("No documents found with the id \"%v\"\n", uid)
 			return &user{UID: "", TC: "", STC: "", BG: "", RIGHT: false, Empty: true}, nil
 		} else {
@@ -74,7 +76,7 @@ func get(uid string) (*user, error) {
 
 func set(user user) (*mongo.UpdateResult, error) {
 	serverData := mongoServer{
-		Host:       "10.0.0.21",
+		Host:       os.Args[1],
 		Port:       27017,
 		DB:         "config",
 		Collection: "users",
