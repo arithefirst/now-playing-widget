@@ -29,6 +29,9 @@ A simple widget to show the current song playing on your Spotify account. Useful
 1. Download the latest release of the server software from the [releases page](https://github.com/arithefirst/now-playing-widget/releases/)
 2. Run the binary for your operating system with the URL for your MongoDB Server (EX: `./nowplaying-server 10.0.0.21`)
 
+> [!NOTE]
+> Make sure the binary is in the same folder as the `/static` directory that you downloaded earlier. If they are not in the same directory, the server will not be able to server the files.
+
 ### Usage
 1. To use your widget, visit the URI you set in the javascript files earlier
 2. Sign in with spotify and enjoy your widget :3
