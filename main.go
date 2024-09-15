@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"os"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -47,7 +48,7 @@ func main() {
 
 	// Start the server
 	fmt.Printf("Server started on port %v\n", port)
-	err := router.Run(fmt.Sprintf("127.0.0.1:%v", port))
+	err := router.Run(fmt.Sprintf("0.0.0.0:%v", port))
 	if err != nil {
 		panic(err)
 	}
