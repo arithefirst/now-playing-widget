@@ -1,21 +1,11 @@
+import { tokenRefresh } from "./refresh.js";
+import { getHex } from "./api.js";
+
 let timeoutId;
 
 // Set the base URL & Client ID of your endpoint Below
 const baseurl = "http://127.0.0.1";
 const client_id = "CLIENT_ID_HERE";
-
-function tokenRefresh() {
-  const redirect_uri = window.location.href.split("#")[0].replace(/\/$/, "");
-  const scope = "user-read-playback-state";
-  let url = "https://accounts.spotify.com/authorize";
-  url += "?response_type=token";
-  url += "&client_id=" + encodeURIComponent(client_id);
-  url += "&scope=" + encodeURIComponent(scope);
-  url += "&redirect_uri=" + encodeURIComponent(redirect_uri);
-
-  console.log(url);
-  window.location.replace(url);
-}
 
 function truncateString(str, maxLength) {
   if (str.length > maxLength) {
@@ -66,17 +56,17 @@ function getNowPlaying() {
         console.error("Error:", error);
         // Check to see if the error is a network error, if not hide the body
         if (error.message.includes("Network")) {
-          tokenRefresh();
+          tokenRefresh(client_id);
         } else {
           $("body").css("opacity", "0");
         }
       });
   } else {
-    tokenRefresh();
+    tokenRefresh(client_id);
   }
 }
 
-// Function to get the UID of a currently signed in user
+// Function to get the UID of a currently signed-in user
 async function getUid() {
   // No need to check for fragment since this is only ever called
   // after running getNowPlaying()
@@ -101,33 +91,15 @@ async function getUid() {
   }
 }
 
-// Function to get the hex value for a user from the API
-async function getHex(uid, type) {
-  try {
-    const response = await fetch(`${baseurl}/api/v1/get/${type.toLowerCase()}?uid=${uid}`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    if (data.err != null && data.err != "No value found: Default returned") {
-      console.log(data.err);
-    }
-    return data.hex;
-  } catch (error) {
-    console.error("Error:", error);
-    throw error;
-  }
-}
-
 // On page load:
 window.onload = async function () {
   getNowPlaying();
 
   const uid = await getUid();
-  const stc = await getHex(uid, "stc");
-  const tc = await getHex(uid, "tc");
-  const bg = await getHex(uid, "bg");
-  const right = await getHex(uid, "right");
+  const stc = await getHex(uid, "stc", baseurl);
+  const tc = await getHex(uid, "tc", baseurl);
+  const bg = await getHex(uid, "bg", baseurl);
+  const right = await getHex(uid, "right", baseurl);
   console.log(`Got Config: {STC: ${stc}, TC: ${tc}, BG: ${bg}, RIGHT: ${right}`);
 
   // Set the CSS color variables based on the response from the API

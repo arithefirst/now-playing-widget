@@ -36,6 +36,8 @@ func main() {
 	// Serve the files in static/
 	router.StaticFile("/", "./static/index.html")
 	router.StaticFile("/main.js", "./static/main.js")
+	router.StaticFile("/api.js", "./static/api.js")
+	router.StaticFile("/refresh.js", "./static/refresh.js")
 	router.StaticFile("/styles.css", "./static/styles.css")
 	router.StaticFile("/jquery-3.7.1.min.js", "./static/jquery-3.7.1.min.js")
 
